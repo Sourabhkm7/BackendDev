@@ -1,48 +1,64 @@
 import mongoose, {Schema} from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"; // Import pagination plugin
 
-
-const videoSchema =  new Schema(
+// Define the schema for the 'Video' model
+const videoSchema = new Schema(
     {
-        videoFile:{
-            type: String, // cloudnary url
-            required: true,
+        // Video file URL (e.g., hosted on Cloudinary)
+        videoFile: {
+            type: String,         // URL to the video file
+            required: true        // Mandatory field
         },
-        thumbnail:{
-            type: String, // Cloudnary url
-            required: true
+        
+        // Thumbnail URL (e.g., hosted on Cloudinary)
+        thumbnail: {
+            type: String,         // URL to the thumbnail image
+            required: true        // Mandatory field
         },
-        title:{
-            type: String, 
-            required: true
+        
+        // Video title
+        title: {
+            type: String,         // Title of the video
+            required: true        // Mandatory field
         },
-        description:{
-            type: String, 
-            required: true
+        
+        // Video description
+        description: {
+            type: String,         // Brief description of the video content
+            required: true        // Mandatory field
         },
-        duration:{
-            type: Number, 
-            required: true
+        
+        // Duration of the video in seconds or minutes
+        duration: {
+            type: Number,         // Length of the video
+            required: true        // Mandatory field
         },
-        views:{
-            type: Number, 
-            default: 0
+        
+        // Number of views on the video
+        views: {
+            type: Number,         // Count of views
+            default: 0            // Defaults to 0 if not specified
         },
-        isPublished:{
-            type: Boolean,
-            default: true
+        
+        // Publish status of the video (true if published, false if it's a draft)
+        isPublished: {
+            type: Boolean,        // Boolean indicating if the video is published
+            default: true         // Defaults to 'true' (published) unless explicitly set to false
         },
-        owner:{
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        } 
+        
+        // Reference to the user who uploaded the video (owner)
+        owner: {
+            type: Schema.Types.ObjectId,  // Reference to the 'User' model
+            ref: "User"                   // 'User' model linked with the ObjectId
+        }
     },
     {
-        timestamps: true
+        timestamps: true  // Automatically adds 'createdAt' and 'updatedAt' fields
     }
-)
+);
 
+// Attach the pagination plugin to the video schema
+videoSchema.plugin(mongooseAggregatePaginate); // Allows easy pagination with aggregate queries
 
-videoSchema.plugin(mongooseAggregatePaginate)
-
-export const Video = mongoose.model("Video", videoSchema)
+// Export the 'Video' model based on the defined schema
+export const Video = mongoose.model("Video", videoSchema);
