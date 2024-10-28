@@ -5,21 +5,30 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken"
 import {apiResponse} from "../utils/apiResponse.js"
 
-const generateAccessAndRefreshTokens = async (userId)=>{
-     try{
-          const user = await User.findById(userId)
-          const accessToken = user.generateAccessToken()
-          const refreshToken = user.generateRefreshToken()
-
-          user.refreshToken = refreshToken
-          await user.save({ validateBeforeSave: false })
-
-          return {accessToken,refreshToken}
-
-     }catch (error){
-          throw new apiError(500, "Something went wrong while generating the refresh and access token")
+const generateAccessAndRefreshTokens = async (userId) => {
+     try {
+         // Retrieve the user from the database by their ID
+         const user = await User.findById(userId);
+ 
+         // Generate an access token for the user
+         const accessToken = user.generateAccessToken();
+ 
+         // Generate a refresh token for the user
+         const refreshToken = user.generateRefreshToken();
+ 
+         // Assign the refresh token to the user's document and save it to the database
+         user.refreshToken = refreshToken;
+         await user.save({ validateBeforeSave: false });
+ 
+         // Return both tokens to the caller
+         return { accessToken, refreshToken };
+ 
+     } catch (error) {
+         // Throw an error with a custom message if token generation fails
+         throw new apiError(500, "Something went wrong while generating the refresh and access token");
      }
-}
+ };
+ 
 
 const registerUser = asyncHandler( async (req, res) =>{
      // get user details from frontend
